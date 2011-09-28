@@ -82,7 +82,7 @@ if (!defined($Config->{SeedAccount}->{SeedUsername}) && defined($ENV{FIGMODEL_US
 	$Config->{SeedAccount}->{SeedUsername} = $ENV{FIGMODEL_USER};
 }
 if (!defined($Config->{SeedAccount}->{SeedUsername})) {
-	die("Username for SEED account must be provided!");
+#	die("Username for SEED account must be provided!");
 }
 if (!defined($Config->{SeedAccount}->{SeedPassword}) && defined($ENV{FIGMODEL_PASSWORD}) 
 	&& defined($ENV{FIGMODEL_USER}) && $ENV{FIGMODEL_USER} eq $Config->{SeedAccount}->{SeedUsername}) {
@@ -163,7 +163,7 @@ if($^O =~ /cygwin/ || $^O =~ /MSWin32/) {
         FIGMODEL_CONFIG => $configFiles,
         ARGONNEDB => $Config->{Optional}->{dataDirectory}.'/ReactionDB/',
         FIGMODEL_USER => $Config->{SeedAccount}->{SeedUsername},
-        FIGMODEL_PASSWORD => $Config->{SeedAccount}->{SeedPassword} || "TEMPORARYNOPASSWORD"
+        FIGMODEL_PASSWORD => $Config->{SeedAccount}->{SeedPassword}
     };
     if (defined($Config->{Optimizers}->{includeDirectoryCPLEX})) {
         $envSettings->{CPLEXINCLUDE} = $Config->{Optimizers}->{includeDirectoryCPLEX};
@@ -179,6 +179,7 @@ if($^O =~ /cygwin/ || $^O =~ /MSWin32/) {
         $bootstrap .= "use lib '$lib';\n";
     }
     foreach my $key (keys %$envSettings) {
+        next unless(defined($key) && defined($envSettings->{$key}));
         if($key eq "PATH") {
             $bootstrap .= '$ENV{'.$key.'} .= $ENV{PATH}."'.$delim.$envSettings->{$key}."\";\n";
             next;
@@ -212,6 +213,7 @@ BOOTSTRAP
     }
     $source_script .= "export PERL5LIB;\n";
     foreach my $key (keys %$envSettings) {
+        next unless(defined($key) && defined($envSettings->{$key}));
         if($key eq "PATH") {
             $source_script .= "export $key=\${$key}$delim".$envSettings->{$key}.";\n";
         } else {
