@@ -20,8 +20,10 @@ use warnings;
 use File::Copy::Recursive qw(dircopy);
 use File::Path qw(make_path remove_tree);
 use File::Temp;
+use Archive::Tar;
 use ModelSEED::FIGMODEL;
 use Data::Dumper;
+use LWP::Simple;
 
 package ModelSEED::TestingHelpers;
 
@@ -182,13 +184,16 @@ sub getTestConfig {
         # If we don't have the database try to download it
         # Fail if we are still unable to get the database.
         if ( !-f "$dataDir/TestDB.tgz") {
-            system("curl $TestDbURL 2> /dev/null > $dataDir/TestDB.tgz");#Note, this does not work in windows...
+            LWP::Simple::getstore($TestDbURL, "$dataDir/TestDB.tgz");
             if (!-f "$dataDir/TestDB.tgz") {
                 ModelSEED::FIGMODEL::FIGMODELERROR("Unable to copy TestDB.tgz from $TestDbURL");
             }
         }
         mkdir $TestDataDir;
-        system("tar -xzf $dataDir/TestDB.tgz -C $TestDataDir");#Note, this does not work in windows...
+        my $tar = Archive::Tar->new();
+        $tar->setcwd($TestDataDir);
+        $tar->read("$dataDir/TestDB.tgz");
+        $tar->extract();
         if( !-d "$TestDataDir/data/ModelDB" || !-f "$TestDataDir/data/ModelDB/ModelDB.sqlite") {
             ModelSEED::FIGMODEL::FIGMODELERROR("TestDB.tgz does not look like I expected!");
         }
