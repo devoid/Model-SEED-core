@@ -7,6 +7,8 @@
 # Date of module creation: 8/26/2008
 ########################################################################
 use strict;
+use warnings;
+use 5.12;
 use Class::ISA;
 use File::Temp qw(tempfile);
 use Carp qw(cluck);
@@ -20,6 +22,7 @@ use Encode;
 use XML::DOM;
 use SAPserver;
 package ModelSEED::FIGMODEL;
+our $VERSION = '0.01';
 use ModelSEED::FIGMODEL::FIGMODELTable;
 use ModelSEED::FIGMODEL::FIGMODELObject;
 use ModelSEED::ModelSEEDUtilities::TimeZone;
