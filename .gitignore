@@ -40,3 +40,8 @@ pm_to_blib*
 cover_db
 pod2htm*.tmp
 ModelSeedCore-*
+# Prevent large files (> 2Mb) that were
+# forcibly removed from repository with
+# git filter-branch, from being re-added
+lib/ModelSEEDScripts/oldtest.rand
+lib/ModelSEEDScripts/test.rand
